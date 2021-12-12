@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -12,7 +13,9 @@ import java.util.Set;
 @Table(name = "usuario")
 @Getter
 @Setter
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +24,12 @@ public class User {
     private String name;
 
     private String password;
+
+    @ElementCollection
+    @CollectionTable(name = "user_roles")
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
 
     public User(String name, String password, Set<Role> roles) {
         this.name = name;
@@ -31,11 +40,5 @@ public class User {
     public User() {
     }
 
-
-    @ElementCollection
-    @CollectionTable(name = "user_roles")
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
-
+    //@TODO HASH and EQUALS
 }

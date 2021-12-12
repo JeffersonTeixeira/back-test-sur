@@ -12,17 +12,13 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"client_id", "number"})})
 public class Phone implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne()
-    @JoinColumn(name = "client_id")
-    @JsonBackReference
-    private Client client;
 
     @Column(name = "number")
     private String number;
@@ -30,20 +26,19 @@ public class Phone implements Serializable {
     @Enumerated(EnumType.STRING)
     private Telefone_Tipo type;
 
+    public void setNumber(String number) {
+        this.number = number.replaceAll("\\D+", "");;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Phone)) return false;
-        Phone phone = (Phone) o;
-        return Objects.equals(
-                this.client != null ? this.client.getId() : null,
-                phone.client != null ? phone.client.getId() : null
-        ) &&
-                Objects.equals(number, phone.number);
+        return this == o ||
+                o instanceof Phone &&
+                        ((Phone) o).number.equals(this.number);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.client != null ? this.client.getId() : null, this.number);
+        return Objects.hash(this.number);
     }
 }

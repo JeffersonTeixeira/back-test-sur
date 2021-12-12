@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/cliente")
-public class ClienteController {
+@RequestMapping("/client")
+public class ClientController {
 
     @Autowired
     ClientService clientService;
@@ -22,7 +22,7 @@ public class ClienteController {
 
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    public ResponseEntity<?> getClientes(
+    public ResponseEntity<?> getClients(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -32,7 +32,7 @@ public class ClienteController {
     }
 
 
-    @PostMapping("/save")
+    @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> saveClient(@Valid @RequestBody Client client) {
 
@@ -42,4 +42,13 @@ public class ClienteController {
             return ResponseEntity.ok(clientService.save(client));
         }
     }
+
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> removeClient(@PathVariable Long id) {
+        clientService.removeById(id);
+        return ResponseEntity.ok("");
+    }
+
 }

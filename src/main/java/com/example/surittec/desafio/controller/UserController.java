@@ -3,7 +3,6 @@ package com.example.surittec.desafio.controller;
 import com.example.surittec.desafio.domain.User;
 import com.example.surittec.desafio.payload.ErrorResponse;
 import com.example.surittec.desafio.payload.UserDTO;
-import com.example.surittec.desafio.repository.UserRepository;
 import com.example.surittec.desafio.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
