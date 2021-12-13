@@ -27,7 +27,7 @@ public class Client implements Serializable {
     @Size(min = 3, message = "O nome é muito curto")
     @Size(max = 100, message = "O nome é muito longo")
     @NotBlank
-    @Pattern(regexp = "[a-zA-Z0-9\\s]+", message = "Só é permitido letras, espaços e números para Nome")
+    @Pattern(regexp = "[a-zA-Z0-9À-ÖØ-öø-ÿ\\-.'\\s]+", message = "Só é permitido letras, espaços e números para Nome")
     @Column(nullable = false)
     private String name;
 
