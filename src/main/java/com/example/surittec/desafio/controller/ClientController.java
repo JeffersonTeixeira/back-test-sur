@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/client")
@@ -43,6 +44,11 @@ public class ClientController {
         }
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    public ResponseEntity<?> getClient(@PathVariable Long id) {
+        return ResponseEntity.ok(clientService.getClientById(id).orElseThrow(NoSuchElementException::new));
+    }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")

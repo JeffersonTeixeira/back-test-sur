@@ -3,10 +3,10 @@ package com.example.surittec.desafio.service;
 import com.example.surittec.desafio.domain.Client;
 import com.example.surittec.desafio.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +20,7 @@ public class ClientService {
         return clientRepository.findByid(id);
     }
 
-    public List<Client> getAll(Pageable pageable) {
+    public Page<Client> getAll(Pageable pageable) {
         return clientRepository.findAllByOrderByNameAsc(pageable);
     }
 
