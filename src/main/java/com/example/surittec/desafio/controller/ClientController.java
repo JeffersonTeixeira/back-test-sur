@@ -2,6 +2,7 @@ package com.example.surittec.desafio.controller;
 
 import com.example.surittec.desafio.domain.Client;
 import com.example.surittec.desafio.service.ClientService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class ClientController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> saveClient(@Valid @RequestBody Client client) {
+    public ResponseEntity<?> saveClient(@Valid @RequestBody Client client) throws JsonProcessingException { //@TODO HANDLE EXCEPTION
 
         if (client.getId() == null) {
             return new ResponseEntity<>(clientService.save(client), HttpStatus.CREATED);
@@ -52,7 +53,7 @@ public class ClientController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> removeClient(@PathVariable Long id) {
+    public ResponseEntity<?> removeClient(@PathVariable Long id) throws JsonProcessingException {
         clientService.removeById(id);
         return ResponseEntity.ok("");
     }
