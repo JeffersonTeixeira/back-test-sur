@@ -3,7 +3,6 @@ package com.example.surittec.desafio.service;
 import com.example.surittec.desafio.domain.Client;
 import com.example.surittec.desafio.domain.Operation;
 import com.example.surittec.desafio.repository.ClientRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,8 +43,7 @@ public class ClientService {
     }
 
     @Transactional
-    public Client save(Client client) throws JsonProcessingException {
-        //Client old = clientRepository.getById(1L);
+    public Client save(Client client) {
         if (client.getEmails() != null) {
             client.getEmails().remove(client.getEmail());
         }
@@ -65,14 +63,15 @@ public class ClientService {
         operation.setDate(LocalDateTime.now());
         operation.setUser(operationService.getAuthenticatedUser());
         Client cliSaved = clientRepository.save(client);
+        clientRepository.removeOrphans();
         operation.setDataAfter(operationService.stringfyObject(cliSaved));
         operationService.save(operation);
 
-        return clientRepository.save(cliSaved);
+        return cliSaved;
     }
 
     @Transactional
-    public void removeById(Long id) throws JsonProcessingException {
+    public void removeById(Long id) {
         Client dbVersion = this.getClientById(id).orElseThrow(EntityNotFoundException::new);
         Operation operation = new Operation();
         operation.setOperation("delete client");

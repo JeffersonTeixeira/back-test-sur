@@ -1,10 +1,7 @@
 package com.example.surittec.desafio.controller;
 
 import com.example.surittec.desafio.domain.Client;
-import com.example.surittec.desafio.repository.ClientRepository;
 import com.example.surittec.desafio.service.ClientService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.modelmapper.spi.ErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/client")
@@ -40,40 +36,30 @@ public class ClientController {
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> saveClient(@Valid @RequestBody Client client) {
-        try {
-            if (client.getId() == null) {
-                return new ResponseEntity<>(clientService.save(client), HttpStatus.CREATED);
-            } else {
-                return ResponseEntity.ok(clientService.save(client));
-            }
-        } catch (EntityNotFoundException | NoSuchElementException ex) {
-            return new ResponseEntity<>(new ErrorMessage("Não encontrado cliente com id:" + client.getId()), HttpStatus.NOT_FOUND);
-        } catch (JsonProcessingException ex) {
-            return ResponseEntity.internalServerError().build();
+
+        if (client.getId() == null) {
+            return new ResponseEntity<>(clientService.save(client), HttpStatus.CREATED);
+        } else {
+            return ResponseEntity.ok(clientService.save(client));
         }
+
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<?> getClient(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(clientService.getClientById(id).orElseThrow(NoSuchElementException::new));
-        } catch (EntityNotFoundException | NoSuchElementException ex) {
-            return new ResponseEntity<>(new ErrorMessage("Não encontrado cliente com id:" + id), HttpStatus.NOT_FOUND);
-        }
+
+        return ResponseEntity.ok(clientService.getClientById(id).orElseThrow(EntityNotFoundException::new));
+
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> removeClient(@PathVariable Long id) {
-        try {
-            clientService.removeById(id);
-            return ResponseEntity.ok("");
-        } catch (EntityNotFoundException | NoSuchElementException ex) {
-            return new ResponseEntity<>(new ErrorMessage("Não encontrado cliente com id:" + id), HttpStatus.NOT_FOUND);
-        } catch (JsonProcessingException ex) {
-            return ResponseEntity.internalServerError().build();
-        }
+
+        clientService.removeById(id);
+        return ResponseEntity.ok("");
+
     }
 
 }

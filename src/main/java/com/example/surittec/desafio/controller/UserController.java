@@ -30,7 +30,7 @@ public class UserController {
     public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
 
         if (userService.findByName(user.getName()).isPresent()) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("Usuário já cadastrado"));
+            throw new RuntimeException("Usuário já cadastrado");
         }
 
         return new ResponseEntity<>(

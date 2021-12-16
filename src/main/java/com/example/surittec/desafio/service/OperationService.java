@@ -18,8 +18,12 @@ public class OperationService {
     @Autowired
     ObjectMapper objectMapper;
 
-    public String stringfyObject(Object obj) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(obj);
+    public String stringfyObject(Object obj) {
+        try {
+            return objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("There was an error processing your request, please try again later");
+        }
     }
 
     public Operation save(Operation operation) {

@@ -2,6 +2,7 @@ package com.example.surittec.desafio.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -26,14 +27,14 @@ public class Client implements Serializable {
 
     @Size(min = 3, message = "O nome é muito curto")
     @Size(max = 100, message = "O nome é muito longo")
-    @NotBlank
     @Pattern(regexp = "[a-zA-Z0-9À-ÖØ-öø-ÿ\\-.'\\s]+", message = "Só é permitido letras, espaços e números para Nome")
     @Column(nullable = false)
     private String name;
 
 
-    @NotBlank
+    @NotBlank(message = "CPF é obrigatório")
     @Column(nullable = false)
+    @CPF(message = "CPF inválido")
     private String document;
 
 
@@ -56,13 +57,13 @@ public class Client implements Serializable {
 
 
     @NotNull
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "main_phone", nullable = false)
     private Phone phone;
 
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
-    @JoinTable(name = "client_phones")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinTable(name = "client_phone")
     private Set<Phone> phones = new HashSet<>();
 
 
