@@ -1,17 +1,25 @@
 package com.example.surittec.desafio.payload;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class ErrorResponse {
-    public ErrorResponse(String message, List<String> details) {
-        super();
+
+    public ErrorResponse(String message) {
         this.message = message;
-        this.details = details;
+    }
+
+    public ErrorResponse(String message, String... details) {
+        this.message = message;
+        this.details = Arrays.asList(details);
+
     }
 
     //General error message about nature of error

@@ -35,6 +35,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private _UserDetailsService userDetailsService;
 
+    @Autowired
+    private RestAuthPoint unauthorizedHandle;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -64,7 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                //@TODO Custom Exception
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandle).and()
                 .authorizeRequests().antMatchers(HttpMethod.POST, "/user/**").permitAll()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
