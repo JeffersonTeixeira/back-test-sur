@@ -19,7 +19,6 @@ public class ErrorResponse {
     public ErrorResponse(String message, String... details) {
         this.message = message;
         this.details = Arrays.asList(details);
-
     }
 
     //General error message about nature of error
