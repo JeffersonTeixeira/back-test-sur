@@ -1,6 +1,6 @@
 # back-test-sur
 Crud using:
-- JWT token
+- JWT
 - Spring security
 - Spring Data JPA
 - MariaDB
