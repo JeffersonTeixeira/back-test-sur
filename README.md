@@ -10,5 +10,5 @@ If the Client (Client entity) was modified between the time user loaded it and t
 
 ### Features:
 - Auto trim (remove spaces) from data retrived
-- Clear and standardised messages when exceptions occurs
+- Clear and standardised response messages when exceptions occurs
 - Data Validation
