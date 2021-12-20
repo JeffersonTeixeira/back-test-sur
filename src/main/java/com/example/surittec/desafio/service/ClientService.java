@@ -2,7 +2,9 @@ package com.example.surittec.desafio.service;
 
 import com.example.surittec.desafio.domain.Client;
 import com.example.surittec.desafio.domain.Operation;
+import com.example.surittec.desafio.exception.ObsoleteDataEntity;
 import com.example.surittec.desafio.repository.ClientRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,9 @@ public class ClientService {
 
     @Autowired
     OperationService operationService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     public Optional<Client> getClientById(Long id) {
         Operation operation = new Operation();
@@ -43,7 +48,7 @@ public class ClientService {
     }
 
     @Transactional
-    public Client save(Client client) {
+    public Client save(Client client) throws ObsoleteDataEntity {
         if (client.getEmails() != null) {
             client.getEmails().remove(client.getEmail());
         }
@@ -58,6 +63,13 @@ public class ClientService {
             Client dbVersion = this.getClientById(client.getId()).orElseThrow(EntityNotFoundException::new);
             operation.setDataBefore(operationService.stringfyObject(dbVersion));
             operation.setOperation("update client");
+
+            if (client.getVersion() != dbVersion.hashCode()) {
+                throw new ObsoleteDataEntity(
+                        "Attempt to save an entity with different version from current",
+                        dbVersion.setVersion(dbVersion.hashCode())
+                );
+            }
         }
 
         operation.setDate(LocalDateTime.now());
@@ -67,7 +79,7 @@ public class ClientService {
         operation.setDataAfter(operationService.stringfyObject(cliSaved));
         operationService.save(operation);
 
-        return cliSaved;
+        return cliSaved.setVersion(cliSaved.hashCode());
     }
 
     @Transactional

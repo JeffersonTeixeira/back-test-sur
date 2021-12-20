@@ -59,6 +59,17 @@ public class Endereco implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cep, logradouro, bairro, cidade, uf, complemento);
+        int hash = 13;
+
+        hash = hash * 7 + (id == null ? 0 : id.hashCode());
+        hash = hash * 7 + cep.hashCode();
+        hash = hash * 7 + logradouro.hashCode();
+        hash = hash * 7 + bairro.hashCode();
+        hash = hash * 7 + cidade.hashCode();
+        hash = hash * 7 + uf.hashCode();
+        hash = hash * 7 + (complemento == null ? 0 : complemento.hashCode());
+
+        return hash;
+
     }
 }

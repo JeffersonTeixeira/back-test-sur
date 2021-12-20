@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Set;
 
 @Entity
@@ -21,6 +20,7 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String name;
 
     private String password;
@@ -40,5 +40,15 @@ public class User implements Serializable {
     public User() {
     }
 
-    //@TODO HASH and EQUALS
+    @Override
+    public boolean equals(Object o) {
+        return this == o ||
+                o instanceof User &&
+                        ((User) o).name.equals(this.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

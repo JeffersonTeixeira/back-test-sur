@@ -24,6 +24,8 @@ public class Client implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Transient
+    private int version;
 
     @Size(min = 3, message = "O nome é muito curto")
     @Size(max = 100, message = "O nome é muito longo")
@@ -71,14 +73,39 @@ public class Client implements Serializable {
         this.document = document.replaceAll("\\D+", "");
     }
 
+    public Client setVersion(int version) {
+        this.version = version;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
-        return this == o ||
-                o instanceof Client && ((Client) o).getId().equals(this.id);
+        if (this == o) return true;
+        if (!(o instanceof Client)) return false;
+        Client c = (Client) o;
+        return Objects.equals(id, c.id) &&
+                name.equals(c.name) &&
+                document.equals(c.document) &&
+                email.equals(c.document) &&
+                Objects.equals(emails, c.emails) &&
+                address.equals(c.address) &&
+                phone.equals(c.phone) &&
+                Objects.equals(phones, c.phones);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        int hash = 13;
+
+        hash = hash * 7 + (id == null ? 0 : id.hashCode());
+        hash = hash * 7 + name.hashCode();
+        hash = hash * 7 + document.hashCode();
+        hash = hash * 7 + email.hashCode();
+        hash = hash * 7 + (emails == null ? 0 : emails.hashCode());
+        hash = hash * 7 + address.hashCode();
+        hash = hash * 7 + phone.hashCode();
+        hash = hash * 7 + (phones == null ? 0 : phones.hashCode());
+
+        return hash;
     }
 }

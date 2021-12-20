@@ -1,7 +1,6 @@
 package com.example.surittec.desafio.domain;
 
 import com.example.surittec.desafio.reference.Telefone_Tipo;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,18 +26,26 @@ public class Phone implements Serializable {
     private Telefone_Tipo type;
 
     public void setNumber(String number) {
-        this.number = number.replaceAll("\\D+", "");;
+        this.number = number.replaceAll("\\D+", "");
     }
 
     @Override
     public boolean equals(Object o) {
-        return this == o ||
-                o instanceof Phone &&
-                        ((Phone) o).number.equals(this.number);
+        if (this == o) return true;
+        if (!(o instanceof Phone)) return false;
+
+        Phone p = (Phone) o;
+        return Objects.equals(id, p.id) &&
+                number.equals(p.number);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.number);
+        int hash = 13;
+
+        hash = hash * 7 + (id == null ? 0 : id.hashCode());
+        hash = hash * 7 + number.hashCode();
+
+        return hash;
     }
 }

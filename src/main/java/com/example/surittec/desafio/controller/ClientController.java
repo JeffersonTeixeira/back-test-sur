@@ -1,7 +1,9 @@
 package com.example.surittec.desafio.controller;
 
 import com.example.surittec.desafio.domain.Client;
+import com.example.surittec.desafio.exception.ObsoleteDataEntity;
 import com.example.surittec.desafio.service.ClientService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,8 @@ public class ClientController {
     @Autowired
     ClientService clientService;
 
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
@@ -36,20 +40,24 @@ public class ClientController {
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> saveClient(@Valid @RequestBody Client client) {
-
-        if (client.getId() == null) {
-            return new ResponseEntity<>(clientService.save(client), HttpStatus.CREATED);
-        } else {
-            return ResponseEntity.ok(clientService.save(client));
+        try {
+            if (client.getId() == null) {
+                return new ResponseEntity<>(clientService.save(client), HttpStatus.CREATED);
+            } else {
+                return ResponseEntity.ok(clientService.save(client));
+            }
+        } catch (ObsoleteDataEntity ex) {
+            return new ResponseEntity<>(ex.getLatestVersion(), HttpStatus.CONFLICT);
         }
-
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<?> getClient(@PathVariable Long id) {
 
-        return ResponseEntity.ok(clientService.getClientById(id).orElseThrow(EntityNotFoundException::new));
+        Client client = clientService.getClientById(id).orElseThrow(EntityNotFoundException::new);
+        client.setVersion(client.hashCode());
+        return ResponseEntity.ok(client);
 
     }
 

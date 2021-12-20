@@ -1,7 +1,6 @@
 package com.example.surittec.desafio.controller;
 
 import com.example.surittec.desafio.domain.User;
-import com.example.surittec.desafio.payload.ErrorResponse;
 import com.example.surittec.desafio.payload.UserDTO;
 import com.example.surittec.desafio.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -30,7 +29,7 @@ public class UserController {
     public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
 
         if (userService.findByName(user.getName()).isPresent()) {
-            throw new RuntimeException("Usuário já cadastrado");
+            throw new RuntimeException("Username already registered");
         }
 
         return new ResponseEntity<>(
